@@ -6,15 +6,13 @@ const express = require('express'),
   PORT = process.env.PORT || 3000,
   WEATHER_API_KEY = process.env.WEATHER_API_KEY,
   GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
-
-
 // CREATE LOCATION ROUTE
 app.get('/location', (req, res) => {
   try {
     // STORE THE USER'S QUERY-TURNED-LOCATION-OBJECT IN LOCATIONDATA
     const locationData = searchToLatLong(req.query.data, res);
   } catch(err) {
-    errorHandler(res, 500, 'Please enter a location!');
+    errorHandler(res, 500, 'Please enter a valid location!');
   }
 });
 
@@ -23,7 +21,7 @@ app.get('/weather', (req, res) => {
   try {
     // STORE THE USER'S QUERY LOCATION
     const weatherData = getWeather();
-    res.send(weatherData);
+    res.send(weatherData(req));
   } catch(err) {
     errorHandler(res, 500, 'Please enter a valid location!');
   }
@@ -48,11 +46,9 @@ function Location(query, res) {
 }
 
 // RETURN ALL WEATHER RECORDS FOR THE USER'S LOCATION QUERY
-const getWeather = () => {
+const getWeather = (data) => {
   const darkskyData = require('./data/darksky.json');
-  const weatherSummaries = darkskyData.daily.data.map(day => {
-    weatherSummaries.push(new Weather(day));
-  });
+  const weatherSummaries = darkskyData.daily.data.map(day => new Weather(day));
   return weatherSummaries;
 };
 
