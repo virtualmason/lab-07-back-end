@@ -1,5 +1,13 @@
 # Project Name
+Number and name of feature: _Floyd Create API For Google GEO & WEATHER_______________________________
 
+Estimate of time needed to complete: 5_____
+
+Start time: __9:00AM___
+
+Finish time: _1:24____
+
+Actual time needed to complete: _____
 **Author**: Rory Letteney
 **Version**: 1.0.6
 
