@@ -12,7 +12,7 @@ app.get('/location', (req, res) => {
     // RETURN THE LOCATION OBJECT
     res.send(locationData);
   } catch(err) {
-    errorHandler(res, 500, 'Please enter a location!');
+    errorHandler(res, 500, 'Please enter a valid location!');
   }
 });
 
@@ -23,7 +23,7 @@ app.get('/weather', (req, res) => {
     const weatherData = getWeather();
     res.send(weatherData);
   } catch(err) {
-    errorHandler(res, 500, 'Please enter a location!');
+    errorHandler(res, 500, 'Please enter a valid location!');
   }
 });
 
