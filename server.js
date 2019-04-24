@@ -2,8 +2,9 @@
 
 const express = require('express'),
   app = express(),
-  PORT = process.env.PORT || 3000;
-
+  PORT = process.env.PORT || 3000,
+WEATHER_API_KEY =process.env.WEATHER_API_KEY,
+GEOCODE_API_KEY=process.env.GEOCODE_API_KEY;
 // CREATE LOCATION ROUTE
 app.get('/location', (req, res) => {
   try {
