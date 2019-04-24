@@ -22,7 +22,7 @@ app.get('/weather', (req, res) => {
   try {
     // STORE THE USER'S QUERY LOCATION
     const weatherData = getWeather();
-    res.send(weatherData);
+    res.send(weatherData(req));
   } catch(err) {
     errorHandler(res, 500, 'Please enter a valid location!');
   }
@@ -43,14 +43,9 @@ function Location(query, res) {
 }
 
 // RETURN ALL WEATHER RECORDS FOR THE USER'S LOCATION QUERY
-const getWeather = () => {
+const getWeather = (data) => {
   const darkskyData = require('./data/darksky.json');
-  const weatherSummaries = [];
-
-  darkskyData.daily.data.forEach(day => {
-    weatherSummaries.push(new Weather(day));
-  });
-
+  const weatherSummaries = darkskyData.daily.data.map(day => new Weather(day));
   return weatherSummaries;
 };
 
