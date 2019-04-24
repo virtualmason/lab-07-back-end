@@ -1,16 +1,18 @@
 'use strict';
 
+const superagent = require('superagent');
 const express = require('express'),
   app = express(),
-  PORT = process.env.PORT || 3000;
+  PORT = process.env.PORT || 3000,
+  WEATHER_API_KEY = process.env.WEATHER_API_KEY,
+  GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
+
 
 // CREATE LOCATION ROUTE
 app.get('/location', (req, res) => {
   try {
     // STORE THE USER'S QUERY-TURNED-LOCATION-OBJECT IN LOCATIONDATA
-    const locationData = searchToLatLong(req.query.data);
-    // RETURN THE LOCATION OBJECT
-    res.send(locationData);
+    const locationData = searchToLatLong(req.query.data, res);
   } catch(err) {
     errorHandler(res, 500, 'Please enter a location!');
   }
@@ -23,33 +25,34 @@ app.get('/weather', (req, res) => {
     const weatherData = getWeather();
     res.send(weatherData);
   } catch(err) {
-    errorHandler(res, 500, 'Please enter a location!');
+    errorHandler(res, 500, 'Please enter a valid location!');
   }
 });
 
 // CREATE A NEW LOCATION OBJECT FOR THE USER'S QUERY
-const searchToLatLong = query => {
-  const geoData = require('./data/geo.json');
-  const location = new Location(query, geoData);
-  return location;
+const searchToLatLong = (request, response) => {
+  let url = `https://maps.googleapis.com/maps/api/geocode/json?address=${request}&key=AIzaSyAvW0xpTOc3Kjw7pJWmC9Hs8GmxCxspc_U`;
+  return superagent.get(url)
+    .then(res => {
+      response.send(new Location(request, res));
+    }).catch(error => {
+      response.status(500).send('Please enter a valid location!');
+    });
 };
 
 function Location(query, res) {
   this.query = query,
-  this.formatted_query = res.results[0].formatted_address,
-  this.latitude = res.results[0].geometry.location.lat,
-  this.longitude = res.results[0].geometry.location.lng;
+  this.formatted_query = res.body.results[0].formatted_address,
+  this.latitude = res.body.results[0].geometry.location.lat,
+  this.longitude = res.body.results[0].geometry.location.lng;
 }
 
 // RETURN ALL WEATHER RECORDS FOR THE USER'S LOCATION QUERY
 const getWeather = () => {
   const darkskyData = require('./data/darksky.json');
-  const weatherSummaries = [];
-
-  darkskyData.daily.data.forEach(day => {
+  const weatherSummaries = darkskyData.daily.data.map(day => {
     weatherSummaries.push(new Weather(day));
   });
-
   return weatherSummaries;
 };
 
