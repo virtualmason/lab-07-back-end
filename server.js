@@ -1,5 +1,9 @@
 'use strict';
 require('dotenv').config();
+const { Client } = require('pg');
+const client = new Client();
+client.connect();
+
 
 const superagent = require('superagent');
 const express = require('express'),
@@ -7,6 +11,19 @@ const express = require('express'),
   PORT = process.env.PORT || 3000,
   WEATHER_API_KEY = process.env.WEATHER_API_KEY,
   GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
+
+
+
+client.query('SELECT $1::text as message', ['Hello world!'], (err, res) => {
+  console.log(err ? err.stack : res.rows[0].message); // Hello World!
+  client.end();
+});
+
+
+
+
+
+
 // CREATE LOCATION ROUTE
 app.get('/location', (req, res) => {
   try {
@@ -27,33 +44,33 @@ app.get('/weather', (req, res) => {
   }
 });
 //function getLocation(rquest, reponse) => {
-  //getLocation(request, response);
+//getLocation(request, response);
 
 //});
 //function getLocation(request, response){
-  //const locationHandler={
-   // cacheHit: (result) =>{
-     //console.log('no data from sql');
-     //response.send(results.rows[0])
+//const locationHandler={
+// cacheHit: (result) =>{
+//console.log('no data from sql');
+//response.send(results.rows[0])
 
-   // }
-  //}
+// }
+//}
 //});
 
 //Location.lookupLocation =(handler) => {
-  //const SQL = 'SELECT * FROM locations WHERE search_query=1';
-  //cont values =[handler.query];
-  //return clientquery(SQL, values);
-  // .then(resutls =>{
-  //   if(results.rowCount > 0) {
-  //     errorHandler.cacheHit(results);
-  //   } esle {
-  //     errorHandler.cacheMiss();
-  //   }.catch9error => {
-  //     console.log(error);
-  //   }
-  //   }
-  //})
+//const SQL = 'SELECT * FROM locations WHERE search_query=1';
+//cont values =[handler.query];
+//return clientquery(SQL, values);
+// .then(resutls =>{
+//   if(results.rowCount > 0) {
+//     errorHandler.cacheHit(results);
+//   } esle {
+//     errorHandler.cacheMiss();
+//   }.catch9error => {
+//     console.log(error);
+//   }
+//   }
+//})
 //}
 
 
@@ -92,7 +109,7 @@ const getWeather = (request, response) => {
     }).catch(error => {
       response.status(500).send('Please enter a valid location!');
     });
-  
+
   // const weatherSummaries = darkskyData.daily.data.map(day => new Weather(day));
   // return weatherSummaries;
   //http://localhost:3000/weather?lat=40.834074&lng=-94.548645
