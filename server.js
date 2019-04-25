@@ -26,8 +26,39 @@ app.get('/weather', (req, res) => {
     errorHandler(res, 500, 'Please enter a valid location!');
   }
 });
+//function getLocation(rquest, reponse) => {
+  //getLocation(request, response);
 
-// CREATE A NEW LOCATION OBJECT FOR THE USER'S QUERY
+//});
+//function getLocation(request, response){
+  //const locationHandler={
+   // cacheHit: (result) =>{
+     //console.log('no data from sql');
+     //response.send(results.rows[0])
+
+   // }
+  //}
+//});
+
+//Location.lookupLocation =(handler) => {
+  //const SQL = 'SELECT * FROM locations WHERE search_query=1';
+  //cont values =[handler.query];
+  //return clientquery(SQL, values);
+  // .then(resutls =>{
+  //   if(results.rowCount > 0) {
+  //     errorHandler.cacheHit(results);
+  //   } esle {
+  //     errorHandler.cacheMiss();
+  //   }.catch9error => {
+  //     console.log(error);
+  //   }
+  //   }
+  //})
+//}
+
+
+
+//CREATE A NEW LOCATION OBJECT FOR THE USER'S QUERY
 const searchToLatLong = (request, response) => {
   let url = `https://maps.googleapis.com/maps/api/geocode/json?address=${request}&key=${WEATHER_API_KEY}`;
   return superagent.get(url)
@@ -37,7 +68,7 @@ const searchToLatLong = (request, response) => {
       response.status(500).send('Please enter a valid location!');
     });
 };
-
+//
 function Location(query, res) {
   this.query = query,
   this.formatted_query = res.body.results[0].formatted_address,
@@ -48,7 +79,7 @@ function Location(query, res) {
 // RETURN ALL WEATHER RECORDS FOR THE USER'S LOCATION QUERY
 const getWeather = (request, response) => {
   // const darkskyData = require('./data/darksky.json');
-  let url = `https://api.darksky.net/forecast/7095b5fd7653232a5682864d8a0a6bbc/${request.query.lat},${request.query.lng}`;
+  let url = `https://api.darksky.net/forecast/${WEATHER_API_KEY}/${request.query.lat},${request.query.lng}`;
   return superagent.get(url)
     .then(res => {
       console.log(res.body);
@@ -64,6 +95,7 @@ const getWeather = (request, response) => {
   
   // const weatherSummaries = darkskyData.daily.data.map(day => new Weather(day));
   // return weatherSummaries;
+  //http://localhost:3000/weather?lat=40.834074&lng=-94.548645
 };
 
 function Weather(day) {
